@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong
 @Service
 class GameResultService {
 
+    // "Datenbank" für GameResults
     private val gameResults = mutableListOf<GameResult>()
     private var nextId = AtomicLong(1)
 

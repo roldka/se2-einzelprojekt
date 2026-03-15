@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 class LeaderboardController(
     private val gameResultService: GameResultService
 ) {
-
+    // REST-Endpoint für Leaderboards (sortiert GameResults nach Score)
     @GetMapping
     fun getLeaderboard(): List<GameResult> =
         gameResultService.getGameResults().sortedWith(compareBy({ -it.score }, { it.id }))

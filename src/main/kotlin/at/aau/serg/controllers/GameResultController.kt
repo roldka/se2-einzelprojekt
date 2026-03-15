@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 class GameResultController(
     private val gameResultService: GameResultService
 ) {
-
+    // REST-Endpoint: CRUD (create, read, update, delete) operations für GameResults-"Datenbank"
     @GetMapping("/{gameResultId}")
     fun getGameResult(@PathVariable gameResultId: Long): GameResult? {
         return gameResultService.getGameResult(gameResultId);
