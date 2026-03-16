@@ -11,6 +11,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import org.mockito.Mockito.`when` as whenever // when is a reserved keyword in Kotlin
 
+// Tests für 100% Coverage in LeaderboardController :)
 class LeaderboardControllerTests {
 
     private lateinit var mockedService: GameResultService
