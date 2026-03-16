@@ -37,21 +37,25 @@ class LeaderboardControllerTests {
         assertEquals(third, res[2])
     }
 
+    // [ALT] Ergebnis (sortiert nach id): first < second < third
+    // [NEU] Ergebnis (sortiert nach timeInSeconds): second < third < first
     @Test
-    fun test_getLeaderboard_sameScore_CorrectIdSorting() {
+    fun test_getLeaderboard_sameScore_CorrectTimeInSecondsSorting() {
         val first = GameResult(1, "first", 20, 20.0)
         val second = GameResult(2, "second", 20, 10.0)
         val third = GameResult(3, "third", 20, 15.0)
-
         whenever(mockedService.getGameResults()).thenReturn(listOf(second, first, third))
 
+        // res = Leaderboard-Reihenfolge
         val res: List<GameResult> = controller.getLeaderboard()
 
+        // Änderung: Reihenfolge der Spieler (first, second, third) gemäß neuer Sortierung angepasst
+        // Erwartete Reihenfolge: second (10s) < third (15s) < first (20s)
         verify(mockedService).getGameResults()
         assertEquals(3, res.size)
-        assertEquals(first, res[0])
-        assertEquals(second, res[1])
-        assertEquals(third, res[2])
+        assertEquals(second, res[0])
+        assertEquals(third, res[1])
+        assertEquals(first, res[2])
     }
 
 }

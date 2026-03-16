@@ -13,7 +13,9 @@ class LeaderboardController(
 ) {
     // REST-Endpoint für Leaderboards (sortiert GameResults nach Score)
     @GetMapping
+    // sortiere nach score (absteigend) und tiebreaker: timeInSeconds (aufsteigend) "schneller ist besser"
+    // änderung: .sortedWith(compareBy({ -it.score }, { it.id })) -> .sortedWith(compareBy({ -it.score }, { it.timeInSeconds }))
     fun getLeaderboard(): List<GameResult> =
-        gameResultService.getGameResults().sortedWith(compareBy({ -it.score }, { it.id }))
+        gameResultService.getGameResults().sortedWith(compareBy({ -it.score }, { it.timeInSeconds }))
 
 }
