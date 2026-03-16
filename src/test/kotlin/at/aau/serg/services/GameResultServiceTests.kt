@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
+// Tests für 100% Coverage in GameResultService :)
 class GameResultServiceTests {
 
     private lateinit var service: GameResultService
@@ -70,6 +71,36 @@ class GameResultServiceTests {
 
         assertEquals(gameResult2, res[1])
         assertEquals(2, res[1].id)
+    }
+
+    // Test für deleteGameResult mit erfolgreicher Löschung
+    @Test
+    fun test_deleteGameResult_existingId_removesElement() {
+
+        val gameResult = GameResult(0, "player1", 17, 15.3)
+        service.addGameResult(gameResult)
+
+        val deleted = service.deleteGameResult(1)
+
+        val res = service.getGameResults()
+
+        assertEquals(true, deleted)
+        assertEquals(0, res.size)
+    }
+
+    // Test für deleteGameResult mit unerfolgreicher Löschung
+    @Test
+    fun test_deleteGameResult_nonexistentId_returnsFalse() {
+
+        val gameResult = GameResult(0, "player1", 17, 15.3)
+        service.addGameResult(gameResult)
+
+        val deleted = service.deleteGameResult(99)
+
+        val res = service.getGameResults()
+
+        assertEquals(false, deleted)
+        assertEquals(1, res.size)
     }
 
 }
