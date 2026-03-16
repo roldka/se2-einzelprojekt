@@ -3,8 +3,10 @@ package at.aau.serg.controllers
 import at.aau.serg.models.GameResult
 import at.aau.serg.services.GameResultService
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.springframework.web.server.ResponseStatusException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import org.mockito.Mockito.`when` as whenever // when is a reserved keyword in Kotlin
@@ -58,4 +60,73 @@ class LeaderboardControllerTests {
         assertEquals(first, res[2])
     }
 
+    // "normales" Verhalten von getLeaderboard mit rank testen (+- 3 Positionen)
+    @Test
+    fun test_getLeaderboard_rank5_returnsPlayersAroundRank() {
+
+        val players = (1..9).map { GameResult(it.toLong(),"p$it",100-it,10.0) }
+
+        whenever(mockedService.getGameResults()).thenReturn(players)
+
+        val res = controller.getLeaderboard(5)
+
+        assertEquals(7, res.size)
+        assertEquals("p2", res[0].playerName)
+        assertEquals("p8", res[6].playerName)
+    }
+
+    // Verhalten von getLeaderboard mit rank = 1 testen (+ 3 Positionen)
+    @Test
+    fun test_getLeaderboard_rank1_returnsBeginning() {
+
+        val players = (1..9).map { GameResult(it.toLong(),"p$it",100-it,10.0) }
+
+        whenever(mockedService.getGameResults()).thenReturn(players)
+
+        val res = controller.getLeaderboard(1)
+
+        assertEquals(4, res.size)
+        assertEquals("p1", res[0].playerName)
+    }
+
+    // Verhalten von getLeaderboard mit rank = 9 (= letzter) testen (- 3 Positionen)
+    @Test
+    fun test_getLeaderboard_rank9_returnsEnd() {
+
+        val players = (1..9).map { GameResult(it.toLong(),"p$it",100-it,10.0) }
+
+        whenever(mockedService.getGameResults()).thenReturn(players)
+
+        val res = controller.getLeaderboard(9)
+
+        assertEquals(4, res.size)
+        assertEquals("p6", res[0].playerName)
+        assertEquals("p9", res[3].playerName)
+    }
+
+    // Verhalten von getLeaderboard mit ungültigen rank (negativ / zu klein)
+    @Test
+    fun test_getLeaderboard_rankTooSmall_throwsException() {
+
+        val players = (1..5).map { GameResult(it.toLong(),"p$it",100-it,10.0) }
+
+        whenever(mockedService.getGameResults()).thenReturn(players)
+
+        assertThrows<ResponseStatusException> {
+            controller.getLeaderboard(0)
+        }
+    }
+
+    // Verhalten von getLeaderboard mit ungültigen rank (zu groß)
+    @Test
+    fun test_getLeaderboard_rankTooLarge_throwsException() {
+
+        val players = (1..5).map { GameResult(it.toLong(),"p$it",100-it,10.0) }
+
+        whenever(mockedService.getGameResults()).thenReturn(players)
+
+        assertThrows<ResponseStatusException> {
+            controller.getLeaderboard(10)
+        }
+    }
 }
